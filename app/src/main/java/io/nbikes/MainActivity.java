@@ -1,13 +1,22 @@
 package io.nbikes;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import io.nbikes.ui.PresenterCompliantActivity;
+import io.nbikes.ui.map.MapFragment;
+
+public class MainActivity extends PresenterCompliantActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main);
+
+        if (getSupportFragmentManager().findFragmentById(R.id.main_container) == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, new MapFragment())
+                    .commitAllowingStateLoss();
+        }
     }
 }
