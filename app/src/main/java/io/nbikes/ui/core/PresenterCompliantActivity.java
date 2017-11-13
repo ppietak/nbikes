@@ -1,9 +1,11 @@
-package io.nbikes.ui;
+package io.nbikes.ui.core;
 
 import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.nbikes.App;
 
 
 abstract public class PresenterCompliantActivity extends AppCompatActivity implements PresenterCompliantView {
@@ -27,5 +29,9 @@ abstract public class PresenterCompliantActivity extends AppCompatActivity imple
 
     public void forceDefaultBackPressed() {
         super.onBackPressed();
+    }
+
+    protected App getApp() {
+        return (App) this.getApplication();
     }
 }

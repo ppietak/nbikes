@@ -1,4 +1,4 @@
-package io.nbikes.ui;
+package io.nbikes.ui.core;
 
 abstract public class Presenter<T extends PresenterCompliantView> {
     private T view;

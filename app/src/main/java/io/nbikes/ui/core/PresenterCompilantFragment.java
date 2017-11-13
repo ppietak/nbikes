@@ -1,4 +1,4 @@
-package io.nbikes.ui;
+package io.nbikes.ui.core;
 
 
 import android.support.v4.app.Fragment;

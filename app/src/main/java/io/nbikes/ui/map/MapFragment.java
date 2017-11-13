@@ -7,27 +7,47 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.squareup.otto.Bus;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.nbikes.R;
 import io.nbikes.di.component.DaggerMapComponent;
 import io.nbikes.di.module.MapModule;
-import io.nbikes.ui.PresenterCompilantFragment;
+import io.nbikes.ui.core.PresenterCompilantFragment;
 
-public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView {
+public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView, OnMapReadyCallback {
     @Inject
     public Bus bus;
 
     @Inject
     public MapPresenter presenter;
 
+    private GoogleMap map;
+
     @Override
     protected MapPresenter getPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        SupportMapFragment mapFragment = new SupportMapFragment();
+        mapFragment.getMapAsync(this);
+
+        MapsInitializer.initialize(getActivity());
+
+        getChildFragmentManager()
+                .beginTransaction()
+                .add(R.id.map_container, mapFragment)
+                .commit();
     }
 
     @Override
@@ -48,10 +68,9 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
         return view;
     }
 
-    @OnClick(R.id.button)
-    public void onButtonClick(View view) {
-        getApp().getAppComponent().bus().post("through bus");
-        getPresenter().onButtonClicked("explicite");
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
     }
 
     @Override
