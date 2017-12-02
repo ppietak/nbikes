@@ -30,6 +30,8 @@ public class MainActivity extends PresenterCompliantActivity implements MainView
                 .build()
                 .inject(this);
 
+        registerPresenter(presenter);
+
         if (getSupportFragmentManager().findFragmentById(R.id.main_container) == null) {
             getSupportFragmentManager()
                     .beginTransaction()

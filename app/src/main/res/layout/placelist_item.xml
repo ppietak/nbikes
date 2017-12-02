@@ -4,8 +4,9 @@
     android:layout_height="match_parent"
     android:background="@android:drawable/screen_background_light">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/placelist_list"
+    <TextView
+        android:id="@+id/placelist_item_label"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:text="PLACEHOLDER" />
 </RelativeLayout>

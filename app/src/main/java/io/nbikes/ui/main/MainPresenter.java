@@ -15,4 +15,14 @@ public class MainPresenter extends Presenter<MainView> {
             getView().openPlaceList();
         }
     }
+
+    @Override
+    public boolean onBackPressed() {
+        if (getView().isPlaceListOpened()) {
+            getView().closePlaceList();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
