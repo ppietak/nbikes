@@ -16,7 +16,6 @@ import io.nbikes.ui.map.MapFragment;
 import io.nbikes.ui.place.list.PlaceListFragment;
 
 public class MainActivity extends PresenterCompliantActivity implements MainView {
-
     @Inject
     MainPresenter presenter;
 
@@ -26,6 +25,7 @@ public class MainActivity extends PresenterCompliantActivity implements MainView
         setContentView(R.layout.main);
 
         DaggerMainComponent.builder()
+                .appComponent(getApp().getAppComponent())
                 .mainModule(new MainModule(this))
                 .build()
                 .inject(this);
@@ -45,6 +45,18 @@ public class MainActivity extends PresenterCompliantActivity implements MainView
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.map, menu);
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.bind(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.unbind();
     }
 
     @Override

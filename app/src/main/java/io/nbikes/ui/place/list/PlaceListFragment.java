@@ -28,7 +28,8 @@ import io.nbikes.ui.core.PresenterCompilantFragment;
 import io.nbikes.ui.place.list.view.PlaceListAdapter;
 
 public class PlaceListFragment extends PresenterCompilantFragment<PlaceListPresenter> implements PlaceListView {
-    private PlaceListAdapter listAdapter;
+    @Inject
+    public PlaceListAdapter listAdapter;
 
     @Inject
     public Bus bus;
@@ -58,6 +59,9 @@ public class PlaceListFragment extends PresenterCompilantFragment<PlaceListPrese
 
         list.setLayoutManager(mLayoutManager);
         list.addItemDecoration(new AdapterDecoration(getActivity()));
+        list.setHasFixedSize(true);
+        list.setVisibility(View.VISIBLE);
+        list.setAdapter(listAdapter);
     }
 
     @Override
@@ -69,13 +73,6 @@ public class PlaceListFragment extends PresenterCompilantFragment<PlaceListPrese
 
     @Override
     public void loadPlaceList(List<Place> places) {
-        if (listAdapter == null) {
-            listAdapter = new PlaceListAdapter();
-            list.setHasFixedSize(true);
-        }
-
-        list.setVisibility(View.VISIBLE);
-        list.setAdapter(listAdapter);
         listAdapter.load(places);
     }
 

@@ -3,6 +3,8 @@ package io.nbikes.data.model;
 public class Place {
     private long id;
     private String name;
+    private double lat;
+    private double lng;
 
     public Place(long id, String name, double lat, double lng) {
         this.id = id;
@@ -10,9 +12,6 @@ public class Place {
         this.lat = lat;
         this.lng = lng;
     }
-
-    private double lat;
-    private double lng;
 
     public long getId() {
         return id;

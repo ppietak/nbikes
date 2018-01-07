@@ -1,11 +1,14 @@
 package io.nbikes.di.module;
 
+import com.squareup.otto.Bus;
+
 import dagger.Module;
 import dagger.Provides;
 import io.nbikes.data.repository.PlaceRepository;
 import io.nbikes.di.scope.CustomScope;
 import io.nbikes.ui.place.list.PlaceListPresenter;
 import io.nbikes.ui.place.list.PlaceListView;
+import io.nbikes.ui.place.list.view.PlaceListAdapter;
 
 @Module
 public class PlaceListModule {
@@ -25,5 +28,11 @@ public class PlaceListModule {
     @CustomScope
     PlaceRepository providesRepository() {
         return new PlaceRepository();
+    }
+
+    @Provides
+    @CustomScope
+    PlaceListAdapter providesListAdapter(Bus bus) {
+        return new PlaceListAdapter(bus);
     }
 }

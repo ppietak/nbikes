@@ -6,7 +6,7 @@ import io.nbikes.di.scope.CustomScope;
 import io.nbikes.ui.main.MainActivity;
 
 @CustomScope
-@Component(modules = {MainModule.class})
+@Component(modules = {MainModule.class}, dependencies = {AppComponent.class})
 public interface MainComponent {
     void inject(MainActivity view);
 }

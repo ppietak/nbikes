@@ -6,18 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.otto.Bus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.nbikes.R;
+import io.nbikes.data.event.PlaceSelectedEvent;
 import io.nbikes.data.model.Place;
 
-public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.ViewHolder> {
+public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.ViewHolder> implements View.OnClickListener {
+    private Bus bus;
     private List<Place> items;
 
-    public PlaceListAdapter() {
+    public PlaceListAdapter(Bus bus) {
+        this.bus = bus;
         this.items = new ArrayList<>();
     }
 
@@ -40,6 +45,8 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         Place place = getItem(position);
 
+        holder.label.setTag(position);
+        holder.label.setOnClickListener(this);
         holder.label.setText(place.getName());
     }
 
@@ -61,5 +68,11 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        Integer position = (Integer) view.getTag();
+        bus.post(new PlaceSelectedEvent(getItem(position)));
     }
 }

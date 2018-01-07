@@ -1,5 +1,7 @@
 package io.nbikes.di.module;
 
+import com.squareup.otto.Bus;
+
 import dagger.Module;
 import dagger.Provides;
 import io.nbikes.di.scope.CustomScope;
@@ -16,7 +18,7 @@ public class MainModule {
 
     @Provides
     @CustomScope
-    MainPresenter providesPresenter() {
-        return new MainPresenter(view);
+    MainPresenter providesPresenter(Bus bus) {
+        return new MainPresenter(view, bus);
     }
 }

@@ -10,8 +10,8 @@ public class PlaceRepository {
     public List<Place> findAll() {
         ArrayList<Place> list = new ArrayList<>();
         list.add(new Place(1, "First place", 51, 18));
-        list.add(new Place(2, "Second place", 51, 18));
-        list.add(new Place(3, "Third place", 51, 18));
+        list.add(new Place(2, "Second place", 20, 120));
+        list.add(new Place(3, "Third place", 1, 15));
         return list;
     }
 }
