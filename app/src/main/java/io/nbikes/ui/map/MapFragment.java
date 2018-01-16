@@ -14,7 +14,11 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,6 +27,7 @@ import io.nbikes.R;
 import io.nbikes.di.component.DaggerMapComponent;
 import io.nbikes.di.module.MapModule;
 import io.nbikes.ui.core.PresenterCompilantFragment;
+import io.nbikes.ui.map.event.MapReadyEvent;
 
 public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView, OnMapReadyCallback {
     @Inject
@@ -74,6 +79,7 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        bus.post(new MapReadyEvent());
     }
 
     @Override
@@ -97,6 +103,15 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
             map.animateCamera(cameraUpdate);
         } else {
             map.moveCamera(cameraUpdate);
+        }
+    }
+
+    @Override
+    public void showMarkers(List<MarkerOptions> markers) {
+        if (map == null) return;
+
+        for (MarkerOptions marker : markers) {
+            map.addMarker(marker);
         }
     }
 }

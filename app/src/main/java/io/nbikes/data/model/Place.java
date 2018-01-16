@@ -1,5 +1,7 @@
 package io.nbikes.data.model;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class Place {
     private long id;
     private String name;
@@ -27,5 +29,9 @@ public class Place {
 
     public double getLng() {
         return lng;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(lat, lng);
     }
 }
