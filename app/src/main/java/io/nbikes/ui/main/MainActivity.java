@@ -81,6 +81,7 @@ public class MainActivity extends PresenterCompliantActivity implements MainView
         if (getSupportFragmentManager().findFragmentById(R.id.over_container) == null) {
             getSupportFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_bottom, R.anim.exit_to_top, R.anim.enter_from_top, R.anim.exit_to_bottom)
                     .replace(R.id.over_container, new PlaceListFragment())
                     .commitAllowingStateLoss();
         }
@@ -92,6 +93,7 @@ public class MainActivity extends PresenterCompliantActivity implements MainView
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(R.anim.enter_from_top, R.anim.exit_to_bottom, R.anim.enter_from_bottom, R.anim.exit_to_top)
                     .remove(fragment)
                     .commitAllowingStateLoss();
         }
