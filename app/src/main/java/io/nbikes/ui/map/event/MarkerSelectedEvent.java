@@ -1,15 +1,13 @@
 package io.nbikes.ui.map.event;
 
-import com.google.android.gms.maps.model.Marker;
-
 public class MarkerSelectedEvent {
-    private Marker marker;
+    private Long id;
 
-    public MarkerSelectedEvent(Marker marker) {
-        this.marker = marker;
+    public MarkerSelectedEvent(Long id) {
+        this.id = id;
     }
 
-    public Marker getMarker() {
-        return marker;
+    public Long getId() {
+        return id;
     }
 }

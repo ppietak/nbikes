@@ -14,11 +14,9 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.otto.Bus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +31,7 @@ import io.nbikes.ui.map.event.MapReadyEvent;
 import io.nbikes.ui.map.event.MarkerSelectedEvent;
 import io.nbikes.ui.map.viewmodel.PlaceViewModel;
 
-public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, GoogleMap.OnMarkerClickListener {
+public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, ClusterManager.OnClusterItemClickListener<PlaceViewModel> {
     public static final int DEFAULT_ZOOM = 10;
     @Inject
     public Bus bus;
@@ -42,7 +40,7 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     public MapPresenter presenter;
 
     private GoogleMap map;
-    private List<Marker> markers;
+    private ClusterManager<PlaceViewModel> mapClusterManager;
 
     @Override
     protected MapPresenter getPresenter() {
@@ -85,9 +83,11 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        mapClusterManager = new ClusterManager<>(getActivity(), map);
+
         map.setOnCameraIdleListener(this);
-        map.setOnMarkerClickListener(this);
-        markers = new ArrayList<>();
+        map.setOnMarkerClickListener(mapClusterManager);
+        mapClusterManager.setOnClusterItemClickListener(this);
 
         bus.post(new MapReadyEvent());
     }
@@ -95,6 +95,8 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     @Override
     public void onCameraIdle() {
         if (map == null) return;
+
+        mapClusterManager.onCameraIdle();
 
         MapMovedEvent event = new MapMovedEvent(
                 map.getCameraPosition().target,
@@ -105,8 +107,8 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        MarkerSelectedEvent event = new MarkerSelectedEvent(marker);
+    public boolean onClusterItemClick(PlaceViewModel placeViewModel) {
+        MarkerSelectedEvent event = new MarkerSelectedEvent(placeViewModel.getId());
         bus.post(event);
         return true;
     }
@@ -144,19 +146,10 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     public void showMarkers(List<PlaceViewModel> viewModels) {
         if (map == null) return;
 
-        for (Marker marker : markers) {
-            marker.remove();
-        }
+        mapClusterManager.clearItems();
 
-        //todo add clustering
         for (PlaceViewModel viewModel : viewModels) {
-            MarkerOptions options = new MarkerOptions()
-                    .title(viewModel.getTitle())
-                    .position(viewModel.getPosition());
-            Marker marker = map.addMarker(options);
-            marker.setTag(viewModel.getId());
-
-            markers.add(marker);
+            mapClusterManager.addItem(viewModel);
         }
     }
 }

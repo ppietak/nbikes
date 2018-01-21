@@ -53,7 +53,7 @@ public class MapPresenter extends Presenter<MapView> {
 
     @Subscribe
     public void onMarkerSelected(MarkerSelectedEvent event) {
-        Place place = repository.find((Long) event.getMarker().getTag());
+        Place place = repository.find(event.getId());
         if (place != null) {
             showPlace(place);
         }
