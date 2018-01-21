@@ -1,26 +1,39 @@
 package io.nbikes.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.orm.SugarRecord;
 
-public class Place {
-    private long id;
+public class Place extends SugarRecord {
     private String name;
+    private String cityName;
+    private String countryName;
     private double lat;
     private double lng;
+    private float cityZoom;
 
-    public Place(long id, String name, double lat, double lng) {
-        this.id = id;
-        this.name = name;
-        this.lat = lat;
-        this.lng = lng;
+    public Place() {
     }
 
-    public long getId() {
-        return id;
+    public Place(Long id, String name, String cityName, String countryName, double lat, double lng, float cityZoom) {
+        setId(id);
+        this.name = name;
+        this.cityName = cityName;
+        this.countryName = countryName;
+        this.lat = lat;
+        this.lng = lng;
+        this.cityZoom = cityZoom;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public String getCountryName() {
+        return countryName;
     }
 
     public double getLat() {
@@ -29,6 +42,10 @@ public class Place {
 
     public double getLng() {
         return lng;
+    }
+
+    public float getCityZoom() {
+        return cityZoom;
     }
 
     public LatLng getLatLng() {

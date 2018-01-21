@@ -26,12 +26,6 @@ public class PlaceListModule {
 
     @Provides
     @CustomScope
-    PlaceRepository providesRepository() {
-        return new PlaceRepository();
-    }
-
-    @Provides
-    @CustomScope
     PlaceListAdapter providesListAdapter(Bus bus) {
         return new PlaceListAdapter(bus);
     }

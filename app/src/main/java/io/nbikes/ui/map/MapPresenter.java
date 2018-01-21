@@ -1,19 +1,28 @@
 package io.nbikes.ui.map;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import io.nbikes.data.event.PlaceSelectedEvent;
 import io.nbikes.data.model.Place;
+import io.nbikes.data.network.event.NextbikePlacesUpdatedEvent;
 import io.nbikes.data.repository.PlaceRepository;
 import io.nbikes.ui.core.Presenter;
+import io.nbikes.ui.map.event.MapMovedEvent;
 import io.nbikes.ui.map.event.MapReadyEvent;
+import io.nbikes.ui.map.event.MarkerSelectedEvent;
+import io.nbikes.ui.map.viewmodel.PlaceViewModel;
+import io.nbikes.ui.place.list.event.PlaceSelectedEvent;
 
 public class MapPresenter extends Presenter<MapView> {
+    public static final int PLACE_ZOOM = 15;
     private Bus bus;
     private PlaceRepository repository;
 
@@ -37,21 +46,54 @@ public class MapPresenter extends Presenter<MapView> {
 
     @Subscribe
     public void onPlaceSelected(PlaceSelectedEvent event) {
-        getView().showMessage(event.getPlace().getName() + " selected");
-        getView().centerMap(event.getPlace().getLat(), event.getPlace().getLng(), true);
+        showPlace(event.getPlace());
+    }
+
+    @Subscribe
+    public void onMarkerSelected(MarkerSelectedEvent event) {
+        Place place = repository.find((Long) event.getMarker().getTag());
+        if (place != null) {
+            showPlace(place);
+        }
+    }
+
+    private void showPlace(Place place) {
+        getView().showMessage(
+                place.getName() + ", " + place.getCityName()
+        );
+        getView().centerMap(
+                place.getLat(),
+                place.getLng(),
+                PLACE_ZOOM,
+                true
+        );
     }
 
     @Subscribe
     public void onMapReady(MapReadyEvent event) {
-        ArrayList<MarkerOptions> markers = new ArrayList<>();
+        getView().centerMap(51.628180725109345, 18.946163579821587, 5, false);
+        List<PlaceViewModel> places = loadPlaceViewModels();
+        getView().showMarkers(places);
+    }
+
+    @Subscribe
+    public void onPlacesUpdated(NextbikePlacesUpdatedEvent event) {
+        List<PlaceViewModel> places = loadPlaceViewModels();
+        getView().showMarkers(places);
+    }
+
+    @NonNull
+    private List<PlaceViewModel> loadPlaceViewModels() {
+        ArrayList<PlaceViewModel> places = new ArrayList<>();
 
         for (Place place : repository.findAll()) {
-            MarkerOptions options = new MarkerOptions()
-                    .position(place.getLatLng())
-                    .title(place.getName());
-            markers.add(options);
+            places.add(new PlaceViewModel(
+                    place.getId(),
+                    place.getLatLng(),
+                    place.getName() + ", " + place.getCityName()
+            ));
         }
 
-        getView().showMarkers(markers);
+        return places;
     }
 }

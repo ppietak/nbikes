@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,9 +28,13 @@ import io.nbikes.R;
 import io.nbikes.di.component.DaggerMapComponent;
 import io.nbikes.di.module.MapModule;
 import io.nbikes.ui.core.PresenterCompilantFragment;
+import io.nbikes.ui.map.event.MapMovedEvent;
 import io.nbikes.ui.map.event.MapReadyEvent;
+import io.nbikes.ui.map.event.MarkerSelectedEvent;
+import io.nbikes.ui.map.viewmodel.PlaceViewModel;
 
-public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView, OnMapReadyCallback {
+public class MapFragment extends PresenterCompilantFragment<MapPresenter> implements MapView, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, GoogleMap.OnMarkerClickListener {
+    public static final int DEFAULT_ZOOM = 10;
     @Inject
     public Bus bus;
 
@@ -37,6 +42,7 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     public MapPresenter presenter;
 
     private GoogleMap map;
+    private List<Marker> markers;
 
     @Override
     protected MapPresenter getPresenter() {
@@ -79,7 +85,30 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
+        map.setOnCameraIdleListener(this);
+        map.setOnMarkerClickListener(this);
+        markers = new ArrayList<>();
+
         bus.post(new MapReadyEvent());
+    }
+
+    @Override
+    public void onCameraIdle() {
+        if (map == null) return;
+
+        MapMovedEvent event = new MapMovedEvent(
+                map.getCameraPosition().target,
+                map.getProjection().getVisibleRegion().latLngBounds,
+                map.getCameraPosition().zoom
+        );
+        bus.post(event);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        MarkerSelectedEvent event = new MarkerSelectedEvent(marker);
+        bus.post(event);
+        return true;
     }
 
     @Override
@@ -94,10 +123,15 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
 
     @Override
     public void centerMap(double lat, double lng, boolean animate) {
+        centerMap(lat, lng, DEFAULT_ZOOM, animate);
+    }
+
+    @Override
+    public void centerMap(double lat, double lng, float zoom, boolean animate) {
         if (map == null) return;
 
         LatLng latLng = new LatLng(lat, lng);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, zoom);
 
         if (animate) {
             map.animateCamera(cameraUpdate);
@@ -107,11 +141,21 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
     }
 
     @Override
-    public void showMarkers(List<MarkerOptions> markers) {
+    public void showMarkers(List<PlaceViewModel> viewModels) {
         if (map == null) return;
 
-        for (MarkerOptions marker : markers) {
-            map.addMarker(marker);
+        for (Marker marker : markers) {
+            marker.remove();
+        }
+
+        for (PlaceViewModel viewModel : viewModels) {
+            MarkerOptions options = new MarkerOptions()
+                    .title(viewModel.getTitle())
+                    .position(viewModel.getPosition());
+            Marker marker = map.addMarker(options);
+            marker.setTag(viewModel.getId());
+
+            markers.add(marker);
         }
     }
 }

@@ -3,7 +3,7 @@ package io.nbikes.ui.main;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import io.nbikes.data.event.PlaceSelectedEvent;
+import io.nbikes.ui.place.list.event.PlaceSelectedEvent;
 import io.nbikes.ui.core.Presenter;
 
 public class MainPresenter extends Presenter<MainView> {

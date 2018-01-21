@@ -22,10 +22,4 @@ public class MapModule {
     MapPresenter providesMapPresenter(Bus bus, PlaceRepository repository) {
         return new MapPresenter(view, bus, repository);
     }
-
-    @Provides
-    @CustomScope
-    PlaceRepository providesRepository() {
-        return new PlaceRepository();
-    }
 }

@@ -1,4 +1,4 @@
-package io.nbikes.data.event;
+package io.nbikes.ui.place.list.event;
 
 import io.nbikes.data.model.Place;
 

@@ -14,7 +14,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.nbikes.R;
-import io.nbikes.data.event.PlaceSelectedEvent;
+import io.nbikes.ui.place.list.event.PlaceSelectedEvent;
 import io.nbikes.data.model.Place;
 
 public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.ViewHolder> implements View.OnClickListener {
