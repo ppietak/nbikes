@@ -1,10 +1,7 @@
 package io.nbikes.ui.map;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -15,7 +12,6 @@ import io.nbikes.data.model.Place;
 import io.nbikes.data.network.event.NextbikePlacesUpdatedEvent;
 import io.nbikes.data.repository.PlaceRepository;
 import io.nbikes.ui.core.Presenter;
-import io.nbikes.ui.map.event.MapMovedEvent;
 import io.nbikes.ui.map.event.MapReadyEvent;
 import io.nbikes.ui.map.event.MarkerSelectedEvent;
 import io.nbikes.ui.map.viewmodel.PlaceViewModel;

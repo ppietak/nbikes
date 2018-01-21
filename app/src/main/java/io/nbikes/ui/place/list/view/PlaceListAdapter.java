@@ -45,9 +45,10 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         Place place = getItem(position);
 
-        holder.label.setTag(position);
-        holder.label.setOnClickListener(this);
-        holder.label.setText(place.getName());
+        holder.title.setTag(position);
+        holder.title.setOnClickListener(this);
+        holder.title.setText(place.getName());
+        holder.subtitle.setText(place.getCountryName());
     }
 
     @Override
@@ -62,7 +63,10 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.placelist_item_label)
-        public TextView label;
+        public TextView title;
+
+        @BindView(R.id.placelist_item_sublabel)
+        public TextView subtitle;
 
         ViewHolder(View view) {
             super(view);

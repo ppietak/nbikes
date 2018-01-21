@@ -5,6 +5,18 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/placelist_item_sublabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:text="PLACEHOLDER" />
+
+    <TextView
         android:id="@+id/placelist_item_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,7 +24,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:clickable="true"
-        android:padding="16dp"
+        android:paddingBottom="32dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
         android:text="PLACEHOLDER"
         android:textSize="18sp" />
+
 </RelativeLayout>
