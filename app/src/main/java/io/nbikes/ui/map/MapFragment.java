@@ -148,6 +148,7 @@ public class MapFragment extends PresenterCompilantFragment<MapPresenter> implem
             marker.remove();
         }
 
+        //todo add clustering
         for (PlaceViewModel viewModel : viewModels) {
             MarkerOptions options = new MarkerOptions()
                     .title(viewModel.getTitle())

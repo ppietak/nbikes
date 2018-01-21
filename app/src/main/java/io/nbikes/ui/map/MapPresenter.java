@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.nbikes.data.model.Place;
+import io.nbikes.data.network.event.NextbikePlacesRequestedEvent;
 import io.nbikes.data.network.event.NextbikePlacesUpdatedEvent;
 import io.nbikes.data.repository.PlaceRepository;
 import io.nbikes.ui.core.Presenter;
+import io.nbikes.ui.map.event.MapMovedEvent;
 import io.nbikes.ui.map.event.MapReadyEvent;
 import io.nbikes.ui.map.event.MarkerSelectedEvent;
 import io.nbikes.ui.map.viewmodel.PlaceViewModel;
@@ -21,6 +23,10 @@ public class MapPresenter extends Presenter<MapView> {
     public static final int PLACE_ZOOM = 15;
     private Bus bus;
     private PlaceRepository repository;
+
+    private double lastLatitude = 0;
+    private double lastLongitude = 0;
+    private double lastZoom = 0;
 
     public MapPresenter(MapView view, Bus bus, PlaceRepository repository) {
         super(view);
@@ -70,6 +76,17 @@ public class MapPresenter extends Presenter<MapView> {
         getView().centerMap(51.628180725109345, 18.946163579821587, 5, false);
         List<PlaceViewModel> places = loadPlaceViewModels();
         getView().showMarkers(places);
+    }
+
+    @Subscribe
+    public void onMapMoved(MapMovedEvent event) {
+        if (lastLatitude != event.getTarget().latitude || lastLongitude != event.getTarget().longitude || lastZoom > event.getZoom()) {
+            bus.post(new NextbikePlacesRequestedEvent(event.getRegion()));
+        }
+
+        lastLatitude = event.getTarget().latitude;
+        lastLongitude = event.getTarget().longitude;
+        lastZoom = event.getZoom();
     }
 
     @Subscribe

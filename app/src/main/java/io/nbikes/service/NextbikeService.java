@@ -6,6 +6,7 @@ import com.squareup.otto.Subscribe;
 import java.util.List;
 
 import io.nbikes.data.network.NextbikeApi;
+import io.nbikes.data.network.event.NextbikePlacesRequestedEvent;
 import io.nbikes.data.network.event.NextbikePlacesUpdatedEvent;
 import io.nbikes.data.network.model.City;
 import io.nbikes.data.network.model.Country;
@@ -31,13 +32,11 @@ public class NextbikeService {
     }
 
     @Subscribe
-    public void onMapMovedEvent(MapMovedEvent event) { //todo not on this event, but through presenter request (ie only when lat/lng changed)
-        if (event.getTarget().latitude == 0) return;
-
+    public void onMapMovedEvent(NextbikePlacesRequestedEvent event) {
         api
                 .getList(
-                        event.getRegion().southwest.latitude+","+event.getRegion().southwest.longitude,
-                        event.getRegion().northeast.latitude+","+event.getRegion().northeast.longitude
+                        event.getBounds().southwest.latitude+","+event.getBounds().southwest.longitude,
+                        event.getBounds().northeast.latitude+","+event.getBounds().northeast.longitude
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
