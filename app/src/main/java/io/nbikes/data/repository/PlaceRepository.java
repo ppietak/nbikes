@@ -14,13 +14,10 @@ public class PlaceRepository {
 
     public void updateAll(List<Place> places) {
         Place.deleteAll(Place.class);
-        for (Place place : places) {
-            Place.save(place);
-        }
+        Place.saveInTx(places);
     }
 
     public List<Place> findAll() {
-        Log.i("repository", "findAll " + Place.listAll(Place.class).size());
         return Place.listAll(Place.class);
     }
 
